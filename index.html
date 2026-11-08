@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Her Sanctuary | makes you pretty</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #d87093;
+            --accent: #fff0f5;
+            --dark: #2c2c2c;
+            --gray: #666;
+            --light-gray: #f8f9fa;
+            --shadow: 0 4px 15px rgba(0,0,0,0.08);
+            --radius: 12px;
+            --star: #ffb400;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #faf5f7; color: var(--dark); padding-bottom: 75px; }
+        header { background: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 12px 16px; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .logo { font-size: 1.3rem; font-weight: 800; color: var(--primary); text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .header-actions { display: flex; gap: 10px; }
+        .icon-btn { position: relative; background: var(--accent); border: none; width: 40px; height: 40px; border-radius: 50%; color: var(--primary); font-size: 1.1rem; cursor: pointer; }
+        .cart-badge { position: absolute; top: -2px; right: -2px; background: var(--primary); color: white; font-size: 0.75rem; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .search-box { position: relative; }
+        .search-box input { width: 100%; padding: 10px 16px 10px 40px; border: 1px solid #eee; background: var(--light-gray); border-radius: 20px; font-size: 0.9rem; outline: none; }
+        .search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray); }
+        .container { padding: 16px; max-width: 800px; margin: 0 auto; }
+        .page-view { display: none; }
+        .page-view.active { display: block; }
+        .category-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 14px; scrollbar-width: none; }
+        .category-scroll::-webkit-scrollbar { display: none; }
+        .cat-chip { white-space: nowrap; background: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: var(--gray); border: 1px solid #eee; cursor: pointer; }
+        .cat-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        @media (min-width: 600px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+        .product-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; cursor: pointer; position: relative; }
+        .badge { position: absolute; top: 8px; left: 8px; background: var(--primary); color: white; font-size: 0.65rem; font-weight: bold; padding: 3px 8px; border-radius: 10px; text-transform: uppercase; }
+        .product-img { width: 100%; height: 170px; object-fit: cover; background: #f0f0f0; }
+        .product-info { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; color: var(--dark); }
+        .product-rating { font-size: 0.75rem; color: var(--star); margin-bottom: 6px; }
+        .product-price { font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+        .btn-view { background: var(--accent); color: var(--primary); border: none; padding: 8px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; text-align: center; margin-top: auto; }
+        .details-card { background: white; border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+        .back-btn { background: none; border: none; color: var(--primary); font-weight: 600; font-size: 0.95rem; margin-bottom: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .details-img { width: 100%; max-height: 350px; object-fit: cover; border-radius: var(--radius); margin-bottom: 16px; }
+        .details-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; }
+        .details-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; font-size: 0.85rem; color: var(--gray); }
+        .details-price { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 16px; }
+        .perks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; background: var(--light-gray); padding: 10px; border-radius: 8px; margin-bottom: 18px; font-size: 0.8rem; color: #444; }
+        .perk-item { display: flex; align-items: center; gap: 6px; }
+        .perk-item i { color: var(--primary); }
+        .section-header { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; color: var(--dark); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
+        .details-desc { color: var(--gray); line-height: 1.6; font-size: 0.95rem; margin-bottom: 20px; }
+        .qty-selector { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .qty-btn { background: var(--light-gray); border: 1px solid #ddd; width: 32px; height: 32px; border-radius: 6px; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
+        .qty-val { font-weight: bold; font-size: 1rem; }
+        .action-btn { background: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 112, 147, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .cart-item { display: flex; align-items: center; background: white; padding: 12px; border-radius: var(--radius); margin-bottom: 10px; box-shadow: var(--shadow); }
+        .cart-item img { width: 65px; height: 65px; border-radius: 8px; object-fit: cover; margin-right: 12px; }
+        .cart-item-info { flex-grow: 1; }
+        .cart-item-title { font-weight: 600; font-size: 0.95rem; }
+        .cart-item-sub { font-size: 0.8rem; color: var(--gray); }
+        .cart-item-price { color: var(--primary); font-weight: 700; font-size: 0.9rem; }
+        .cart-total-box { background: white; padding: 16px; border-radius: var(--radius); margin-top: 16px; box-shadow: var(--shadow); }
+        .total-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
+        .form-card { background: white; padding: 18px; border-radius: var(--radius); box-shadow: var(--shadow); }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--dark); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; outline: none; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; box-shadow: 0 -2px 10px rgba(0,0,0,0.03); z-index: 100; }
+        .nav-item { display: flex; flexDirection: column; align-items: center; color: var(--gray); font-size: 0.75rem; cursor: pointer; text-decoration: none; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { font-size: 1.2rem; margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <div class="logo" onclick="showPage('shop-page')">
+                <i class="fa-solid fa-gem"></i> Her Sanctuary
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="showPage('orders-page')">
+                    <i class="fa-solid fa-receipt"></i>
+                </button>
+                <button class="icon-btn" onclick="showPage('cart-page')">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-badge" id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Search beauty products..." onkeyup="filterProducts()">
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div id="shop-page" class="page-view active">
+            <div class="category-scroll">
+                <div class="cat-chip active" onclick="filterCategory('All')">All</div>
+                <div class="cat-chip" onclick="filterCategory('Face')">Face</div>
+                <div class="cat-chip" onclick="filterCategory('Lips')">Lips</div>
+                <div class="cat-chip" onclick="filterCategory('Eyes')">Eyes</div>
+            </div>
+
+            <div class="product-grid" id="productGrid"></div>
+        </div>
+
+        <div id="details-page" class="page-view">
+            <button class="back-btn" onclick="showPage('shop-page')">
+                <i class="fa-solid fa-arrow-left"></i> Back to Shop
+            </button>
+            <div class="details-card">
+                <img id="detail-img" src="" alt="" class="details-img">
+                <h1 id="detail-title" class="details-title"></h1>
+                
+                <div class="details-meta">
+                    <span style="color: var(--star);"><i class="fa-solid fa-star"></i> <span id="detail-rating"></span></span>
+                    <span>•</span>
+                    <span id="detail-reviews"></span>
+                    <span>•</span>
+                    <span style="color: green; font-weight: 600;"><i class="fa-solid fa-check-circle"></i> In Stock</span>
+                </div>
+
+                <div id="detail-price" class="details-price"></div>
+
+                <div class="perks-grid">
+                    <div class="perk-item"><i class="fa-solid fa-truck-fast"></i> Free Shipping</div>
+                    <div class="perk-item"><i class="fa-solid fa-shield-heart"></i> 100% Authentic</div>
+                    <div class="perk-item"><i class="fa-solid fa-hand-holding-dollar"></i> Cash on Delivery</div>
+                    <div class="perk-item"><i class="fa-solid fa-rotate-left"></i> 7 Days Return</div>
+                </div>
+                
+                <div class="section-header">About This Product</div>
+                <p id="detail-desc" class="details-desc"></p>
+                
+                <div class="qty-selector">
+                    <span style="font-weight: 600; font-size: 0.9rem;">Quantity:</span>
+                    <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                    <span class="qty-val" id="qty-count">1</span>
+                    <button class="qty-btn" onclick="changeQty(1)">+</button>
+                </div>
+
+                <button class="action-btn" onclick="addToCartCurrent()">
+                    <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+
+        <div id="cart-page" class="page-view">
+            <button class="back-btn" onclick="showPage('shop-page')">
+                <i class="fa-solid fa-arrow-left"></i> Continue Shopping
+            </button>
+            <h2 style="font-size: 1.2rem; margin-bottom: 12px;">My Shopping Cart</h2>
+            <div id="cart-items-container"></div>
+            <div class="cart-total-box">
+                <div class="total-row">
+                    <span>Total Amount:</span>
+                    <span id="cart-total-price">₱0.00</span>
+                </div>
+                <button class="action-btn" onclick="showPage('checkout-page')">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
+
+        <div id="checkout-page" class="page-view">
+            <button class="back-btn" onclick="showPage('cart-page')">
+                <i class="fa-solid fa-arrow-left"></i> Back to Cart
+            </button>
+            <h2 style="font-size: 1.2rem; margin-bottom: 14px;">Delivery Information</h2>
+            
+            <div class="form-card">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="cust-name" placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" id="cust-phone" placeholder="09XXXXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>Delivery Address</label>
+                    <textarea id="cust-address" rows="3" placeholder="Enter complete home address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select id="cust-payment">
+                        <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
+                        <option value="GCash">GCash E-Wallet</option>
+                    </select>
+                </div>
+
+                <button class="action-btn" style="margin-top: 10px;" onclick="placeOrder()">
+                    Place Order Now
+                </button>
+            </div>
+        </div>
+
+        <div id="orders-page" class="page-view">
+            <button class="back-btn" onclick="showPage('shop-page')">
+                <i class="fa-solid fa-arrow-left"></i> Back to Shop
+            </button>
+            <h2 style="font-size: 1.2rem; margin-bottom: 12px;">My Orders Summary</h2>
+            <div id="orders-container"></div>
+        </div>
+
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" id="nav-home" onclick="showPage('shop-page')">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" id="nav-cart" onclick="showPage('cart-page')">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span>Cart</span>
+        </div>
+        <div class="nav-item" id="nav-orders" onclick="showPage('orders-page')">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Orders</span>
+        </div>
+    </nav>
+
+    <script>
+        
+        const products = [
+            { 
+                id: 1, 
+                name: "Rosy Cheeks", 
+                price: 199.00, 
+                category: "Face", 
+                img: "P1.jpg", 
+                rating: 4.9, 
+                reviewsCount: "142 Reviews", 
+                badge: "BESTSELLER", 
+                desc: "A velvety smooth compact blush designed to deliver a natural, radiant rosy tint. Easy to blend and builds seamlessly for a fresh flush that stays all day." 
+            },
+            { 
+                id: 2, 
+                name: "Flawless Base", 
+                price: 349.00, 
+                category: "Face", 
+                img: "P2.jpg", 
+                rating: 4.8, 
+                reviewsCount: "98 Reviews", 
+                badge: "VIRAL", 
+                desc: "A lightweight liquid foundation offering buildable medium-to-full coverage. Formulated to blur imperfections and equalize skin tone with a silky smooth finish." 
+            },
+            { 
+                id: 3, 
+                name: "Lash Lift", 
+                price: 149.00, 
+                category: "Eyes", 
+                img: "P3.jpg", 
+                rating: 5.0, 
+                reviewsCount: "210 Reviews", 
+                badge: "MUST-HAVE", 
+                desc: "An ergonomically designed premium eyelash curler crafted to lift, curl, and fan out lashes safely without pinching or damaging delicate hair fibers." 
+            },
+            { 
+                id: 4, 
+                name: "Lip Stain", 
+                price: 220.00, 
+                category: "Lips", 
+                img: "P4.jpg", 
+                rating: 4.7, 
+                reviewsCount: "85 Reviews", 
+                badge: "POPULAR", 
+                desc: "A long-lasting multi-use liquid stain for lips and cheeks. Infused with hydrating properties to provide vibrant color without drying out skin." 
+            },
+            { 
+                id: 5, 
+                name: "Sun kissed", 
+                price: 280.00, 
+                category: "Face", 
+                img: "P5.jpg", 
+                rating: 4.9, 
+                reviewsCount: "115 Reviews", 
+                badge: "TRENDING", 
+                desc: "A creamy contour stick that glides effortlessly on skin to add warmth and definition. Perfect for sculpting cheekbones with a natural sun-kissed effect." 
+            },
+            { 
+                id: 6, 
+                name: "Perfect Touch", 
+                price: 185.00, 
+                category: "Face", 
+                img: "P6.jpg", 
+                rating: 4.8, 
+                reviewsCount: "164 Reviews", 
+                badge: "TOP CHOICE", 
+                desc: "A high-pigment liquid concealer with a soft wand applicator. Effortlessly brightens dark under-eye circles and masks blemishes seamlessly." 
+            },
+            { 
+                id: 7, 
+                name: "Soft Matte", 
+                price: 250.00, 
+                category: "Face", 
+                img: "P7.jpg", 
+                rating: 4.6, 
+                reviewsCount: "73 Reviews", 
+                badge: "HOT", 
+                desc: "An oil-control pressed setting powder formulated to minimize shine and pores. Keeps your complexion looking fresh, smooth, and matte throughout the day." 
+            },
+            { 
+                id: 8, 
+                name: "Lash Bloom", 
+                price: 299.00, 
+                category: "Eyes", 
+                img: "P8.jpg", 
+                rating: 4.9, 
+                reviewsCount: "190 Reviews", 
+                badge: "NEW", 
+                desc: "A lengthening and volumizing mascara equipped with a precision brush. Smudge-proof and waterproof formula designed for dramatic, clump-free lashes." 
+            },
+            { 
+                id: 9, 
+                name: "Stay Fresh", 
+                price: 310.00, 
+                category: "Face", 
+                img: "P9.jpg", 
+                rating: 4.8, 
+                reviewsCount: "88 Reviews", 
+                badge: "ESSENTIAL", 
+                desc: "An ultra-fine makeup setting spray designed to lock in makeup for up to 16 hours. Resists fading, creasing, and melting under warm climate conditions." 
+            },
+            { 
+                id: 10, 
+                name: "Velvet Kiss", 
+                price: 260.00, 
+                category: "Lips", 
+                img: "P10.jpg", 
+                rating: 4.9, 
+                reviewsCount: "130 Reviews", 
+                badge: "CLASSIC", 
+                desc: "A classic soft-matte bullet lipstick delivering rich pigment in a single swipe. Features a moisturizing formula that keeps lips soft and comfortable." 
+            }
+        ];
+
+        let cart = [];
+        let orders = [];
+        let selectedProductId = null;
+        let currentQty = 1;
+        let currentCategory = 'All';
+
+        function renderProducts(items) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+
+            items.forEach(item => {
+                grid.innerHTML += `
+                    <div class="product-card" onclick="openProductDetails(${item.id})">
+                        <span class="badge">${item.badge}</span>
+                        <img src="${item.img}" alt="${item.name}" class="product-img">
+                        <div class="product-info">
+                            <div class="product-title">${item.name}</div>
+                            <div class="product-rating">
+                                <i class="fa-solid fa-star"></i> ${item.rating} (${item.reviewsCount})
+                            </div>
+                            <div class="product-price">₱${item.price.toFixed(2)}</div>
+                            <div class="btn-view">View Details</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => {
+                const matchesSearch = p.name.toLowerCase().includes(query);
+                const matchesCat = currentCategory === 'All' || p.category === currentCategory;
+                return matchesSearch && matchesCat;
+            });
+            renderProducts(filtered);
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-chip').forEach(c => {
+                c.classList.toggle('active', c.innerText === cat);
+            });
+            filterProducts();
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+
+            document.getElementById('nav-home').classList.toggle('active', pageId === 'shop-page');
+            document.getElementById('nav-cart').classList.toggle('active', pageId === 'cart-page');
+            document.getElementById('nav-orders').classList.toggle('active', pageId === 'orders-page');
+
+            if(pageId === 'cart-page') renderCart();
+            if(pageId === 'orders-page') renderOrders();
+        }
+
+        function openProductDetails(id) {
+            const item = products.find(p => p.id === id);
+            if(!item) return;
+
+            selectedProductId = item.id;
+            currentQty = 1;
+            document.getElementById('qty-count').innerText = currentQty;
+
+            document.getElementById('detail-img').src = item.img;
+            document.getElementById('detail-title').innerText = item.name;
+            document.getElementById('detail-rating').innerText = item.rating;
+            document.getElementById('detail-reviews').innerText = item.reviewsCount;
+            document.getElementById('detail-price').innerText = `₱${item.price.toFixed(2)}`;
+            document.getElementById('detail-desc').innerText = item.desc;
+
+            showPage('details-page');
+        }
+
+        function changeQty(amount) {
+            if(currentQty + amount >= 1) {
+                currentQty += amount;
+                document.getElementById('qty-count').innerText = currentQty;
+            }
+        }
+
+        function addToCartCurrent() {
+            if(selectedProductId) {
+                const item = products.find(p => p.id === selectedProductId);
+                const existingIndex = cart.findIndex(c => c.id === item.id);
+                
+                if(existingIndex > -1) {
+                    cart[existingIndex].quantity += currentQty;
+                } else {
+                    cart.push({ ...item, quantity: currentQty });
+                }
+
+                updateCartBadge();
+                alert(`Added ${currentQty}x "${item.name}" to your cart!`);
+                showPage('shop-page');
+            }
+        }
+
+        function updateCartBadge() {
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').innerText = totalCount;
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+            let total = 0;
+
+            if(cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#888; padding:30px 0;">Your cart is currently empty.</p>';
+            } else {
+                cart.forEach((item, idx) => {
+                    const itemSubtotal = item.price * item.quantity;
+                    total += itemSubtotal;
+                    container.innerHTML += `
+                        <div class="cart-item">
+                            <img src="${item.img}" alt="${item.name}">
+                            <div class="cart-item-info">
+                                <div class="cart-item-title">${item.name}</div>
+                                <div class="cart-item-sub">Qty: ${item.quantity} x ₱${item.price.toFixed(2)}</div>
+                                <div class="cart-item-price">₱${itemSubtotal.toFixed(2)}</div>
+                            </div>
+                            <button onclick="removeFromCart(${idx})" style="border:none; background:none; color:red; font-size:1.1rem; cursor:pointer;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('cart-total-price').innerText = `₱${total.toFixed(2)}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartBadge();
+            renderCart();
+        }
+
+        function placeOrder() {
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const address = document.getElementById('cust-address').value.trim();
+            const payment = document.getElementById('cust-payment').value;
+
+            if(!name || !phone || !address) {
+                alert('Please complete all delivery details before placing your order.');
+                return;
+            }
+
+            if(cart.length === 0) {
+                alert('Your cart is empty!');
+                showPage('shop-page');
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const orderRecord = {
+                id: 'HS-' + Math.floor(100000 + Math.random() * 900000),
+                date: new Date().toLocaleDateString(),
+                customer: name,
+                address: address,
+                payment: payment,
+                items: [...cart],
+                total: total
+            };
+
+            orders.unshift(orderRecord);
+            cart = [];
+            updateCartBadge();
+            
+            alert(`Order Successful! Order ID: ${orderRecord.id}`);
+            showPage('orders-page');
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('orders-container');
+            container.innerHTML = '';
+
+            if(orders.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#888; padding:30px 0;">No past orders yet.</p>';
+                return;
+            }
+
+            orders.forEach(ord => {
+                let itemsSummary = ord.items.map(i => `${i.quantity}x ${i.name}`).join(', ');
+                container.innerHTML += `
+                    <div class="form-card" style="margin-bottom: 12px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <strong style="color:var(--primary);">${ord.id}</strong>
+                            <span style="font-size:0.8rem; color:#888;">${ord.date}</span>
+                        </div>
+                        <p style="font-size:0.85rem; color:#444; margin-bottom:4px;"><strong>Customer:</strong> ${ord.customer}</p>
+                        <p style="font-size:0.85rem; color:#444; margin-bottom:4px;"><strong>Payment:</strong> ${ord.payment}</p>
+                        <p style="font-size:0.85rem; color:#666; margin-bottom:8px;"><strong>Items:</strong> ${itemsSummary}</p>
+                        <div style="font-weight:bold; color:var(--primary); font-size:1rem; border-top:1px dashed #eee; padding-top:6px;">
+                            Total Paid: ₱${ord.total.toFixed(2)}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        renderProducts(products);
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Her Sanctuary | makes you pretty</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #d87093;
+            --accent: #fff0f5;
+            --dark: #2c2c2c;
+            --gray: #666;
+            --light-gray: #f8f9fa;
+            --shadow: 0 4px 15px rgba(0,0,0,0.08);
+            --radius: 12px;
+            --star: #ffb400;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #faf5f7; color: var(--dark); padding-bottom: 75px; }
+        header { background: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 12px 16px; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .logo { font-size: 1.3rem; font-weight: 800; color: var(--primary); text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .header-actions { display: flex; gap: 10px; }
+        .icon-btn { position: relative; background: var(--accent); border: none; width: 40px; height: 40px; border-radius: 50%; color: var(--primary); font-size: 1.1rem; cursor: pointer; }
+        .cart-badge { position: absolute; top: -2px; right: -2px; background: var(--primary); color: white; font-size: 0.75rem; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .search-box { position: relative; }
+        .search-box input { width: 100%; padding: 10px 16px 10px 40px; border: 1px solid #eee; background: var(--light-gray); border-radius: 20px; font-size: 0.9rem; outline: none; }
+        .search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray); }
+        .container { padding: 16px; max-width: 800px; margin: 0 auto; }
+        .page-view { display: none; }
+        .page-view.active { display: block; }
+        .category-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 14px; scrollbar-width: none; }
+        .category-scroll::-webkit-scrollbar { display: none; }
+        .cat-chip { white-space: nowrap; background: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: var(--gray); border: 1px solid #eee; cursor: pointer; }
+        .cat-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        @media (min-width: 600px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+        .product-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; cursor: pointer; position: relative; }
+        .badge { position: absolute; top: 8px; left: 8px; background: var(--primary); color: white; font-size: 0.65rem; font-weight: bold; padding: 3px 8px; border-radius: 10px; text-transform: uppercase; }
+        .product-img { width: 100%; height: 170px; object-fit: cover; background: #f0f0f0; }
+        .product-info { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; color: var(--dark); }
+        .product-rating { font-size: 0.75rem; color: var(--star); margin-bottom: 6px; }
+        .product-price { font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+        .btn-view { background: var(--accent); color: var(--primary); border: none; padding: 8px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; text-align: center; margin-top: auto; }
+        .details-card { background: white; border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+        .back-btn { background: none; border: none; color: var(--primary); font-weight: 600; font-size: 0.95rem; margin-bottom: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .details-img { width: 100%; max-height: 350px; object-fit: cover; border-radius: var(--radius); margin-bottom: 16px; }
+        .details-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; }
+        .details-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; font-size: 0.85rem; color: var(--gray); }
+        .details-price { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 16px; }
+        .perks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; background: var(--light-gray); padding: 10px; border-radius: 8px; margin-bottom: 18px; font-size: 0.8rem; color: #444; }
+        .perk-item { display: flex; align-items: center; gap: 6px; }
+        .perk-item i { color: var(--primary); }
+        .section-header { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; color: var(--dark); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
+        .details-desc { color: var(--gray); line-height: 1.6; font-size: 0.95rem; margin-bottom: 20px; }
+        .qty-selector { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .qty-btn { background: var(--light-gray); border: 1px solid #ddd; width: 32px; height: 32px; border-radius: 6px; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
+        .qty-val { font-weight: bold; font-size: 1rem; }
+        .action-btn { background: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 112, 147, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .cart-item { display: flex; align-items: center; background: white; padding: 12px; border-radius: var(--radius); margin-bottom: 10px; box-shadow: var(--shadow); }
+        .cart-item img { width: 65px; height: 65px; border-radius: 8px; object-fit: cover; margin-right: 12px; }
+        .cart-item-info { flex-grow: 1; }
+        .cart-item-title { font-weight: 600; font-size: 0.95rem; }
+        .cart-item-sub { font-size: 0.8rem; color: var(--gray); }
+        .cart-item-price { color: var(--primary); font-weight: 700; font-size: 0.9rem; }
+        .cart-total-box { background: white; padding: 16px; border-radius: var(--radius); margin-top: 16px; box-shadow: var(--shadow); }
+        .total-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
+        .form-card { background: white; padding: 18px; border-radius: var(--radius); box-shadow: var(--shadow); }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--dark); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; outline: none; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; box-shadow: 0 -2px 10px rgba(0,0,0,0.03); z-index: 100; }
+        .nav-item { display: flex; flexDirection: column; align-items: center; color: var(--gray); font-size: 0.75rem; cursor: pointer; text-decoration: none; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { font-size: 1.2rem; margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <div class="logo" onclick="showPage('shop-page')">
+                <i class="fa-solid fa-gem"></i> Her Sanctuary
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="showPage('orders-page')">
+                    <i class="fa-solid fa-receipt"></i>
+                </button>
+                <button class="icon-btn" onclick="showPage('cart-page')">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-badge" id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Search beauty products..." onkeyup="filterProducts()">
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div id="shop-page" class="page-view active">
+            <div class="category-scroll">
+                <div class="cat-chip active" onclick="filterCategory('All')">All</div>
+                <div class="cat-chip" onclick="filterCategory('Face')">Face</div>
+                <div class="cat-chip" onclick="filterCategory('Lips')">Lips</div>
+                <div class="cat-chip" onclick="filterCategory('Eyes')">Eyes</div>
+            </div>
+
+            <div class="product-grid" id="productGrid"></div>
+        </div>
+
+        <div id="details-page" class="page-view">
+            <button class="back-btn" onclick="showPage('shop-page')">
+                <i class="fa-solid fa-arrow-left"></i> Back to Shop
+            </button>
+            <div class="details-card">
+                <img id="detail-img" src="" alt="" class="details-img">
+                <h1 id="detail-title" class="details-title"></h1>
+                
+                <div class="details-meta">
+                    <span style="color: var(--star);"><i class="fa-solid fa-star"></i> <span id="detail-rating"></span></span>
+                    <span>•</span>
+                    <span id="detail-reviews"></span>
+                    <span>•</span>
+                    <span style="color: green; font-weight: 600;"><i class="fa-solid fa-check-circle"></i> In Stock</span>
+                </div>
+
+                <div id="detail-price" class="details-price"></div>
+
+                <div class="perks-grid">
+                    <div class="perk-item"><i class="fa-solid fa-truck-fast"></i> Free Shipping</div>
+                    <div class="perk-item"><i class="fa-solid fa-shield-heart"></i> 100% Authentic</div>
+                    <div class="perk-item"><i class="fa-solid fa-hand-holding-dollar"></i> Cash on Delivery</div>
+                    <div class="perk-item"><i class="fa-solid fa-rotate-left"></i> 7 Days Return</div>
+                </div>
+                
+                <div class="section-header">About This Product</div>
+                <p id="detail-desc" class="details-desc"></p>
+                
+                <div class="qty-selector">
+                    <span style="font-weight: 600; font-size: 0.9rem;">Quantity:</span>
+                    <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                    <span class="qty-val" id="qty-count">1</span>
+                    <button class="qty-btn" onclick="changeQty(1)">+</button>
+                </div>
+
+                <button class="action-btn" onclick="addToCartCurrent()">
+                    <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+
+        <div id="cart-page" class="page-view">
+            <button class="back-btn" onclick="showPage('shop-page')">
+                <i class="fa-solid fa-arrow-left"></i> Continue Shopping
+            </button>
+            <h2 style="font-size: 1.2rem; margin-bottom: 12px;">My Shopping Cart</h2>
+            <div id="cart-items-container"></div>
+            <div class="cart-total-box">
+                <div class="total-row">
+                    <span>Total Amount:</span>
+                    <span id="cart-total-price">₱0.00</span>
+                </div>
+                <button class="action-btn" onclick="showPage('checkout-page')">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
+
+        <div id="checkout-page" class="page-view">
+            <button class="back-btn" onclick="showPage('cart-page')">
+                <i class="fa-solid fa-arrow-left"></i> Back to Cart
+            </button>
+            <h2 style="font-size: 1.2rem; margin-bottom: 14px;">Delivery Information</h2>
+            
+            <div class="form-card">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="cust-name" placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" id="cust-phone" placeholder="09XXXXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>Delivery Address</label>
+                    <textarea id="cust-address" rows="3" placeholder="Enter complete home address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select id="cust-payment">
+                        <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
+                        <option value="GCash">GCash E-Wallet</option>
+                    </select>
+                </div>
+
+                <button class="action-btn" style="margin-top: 10px;" onclick="placeOrder()">
+                    Place Order Now
+                </button>
+            </div>
+        </div>
+
+        <div id="orders-page" class="page-view">
+            <button class="back-btn" onclick="showPage('shop-page')">
+                <i class="fa-solid fa-arrow-left"></i> Back to Shop
+            </button>
+            <h2 style="font-size: 1.2rem; margin-bottom: 12px;">My Orders Summary</h2>
+            <div id="orders-container"></div>
+        </div>
+
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" id="nav-home" onclick="showPage('shop-page')">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" id="nav-cart" onclick="showPage('cart-page')">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span>Cart</span>
+        </div>
+        <div class="nav-item" id="nav-orders" onclick="showPage('orders-page')">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Orders</span>
+        </div>
+    </nav>
+
+    <script>
+        
+        const products = [
+            { 
+                id: 1, 
+                name: "Rosy Cheeks", 
+                price: 199.00, 
+                category: "Face", 
+                img: "P1.jpg", 
+                rating: 4.9, 
+                reviewsCount: "142 Reviews", 
+                badge: "BESTSELLER", 
+                desc: "A velvety smooth compact blush designed to deliver a natural, radiant rosy tint. Easy to blend and builds seamlessly for a fresh flush that stays all day." 
+            },
+            { 
+                id: 2, 
+                name: "Flawless Base", 
+                price: 349.00, 
+                category: "Face", 
+                img: "P2.jpg", 
+                rating: 4.8, 
+                reviewsCount: "98 Reviews", 
+                badge: "VIRAL", 
+                desc: "A lightweight liquid foundation offering buildable medium-to-full coverage. Formulated to blur imperfections and equalize skin tone with a silky smooth finish." 
+            },
+            { 
+                id: 3, 
+                name: "Lash Lift", 
+                price: 149.00, 
+                category: "Eyes", 
+                img: "P3.jpg", 
+                rating: 5.0, 
+                reviewsCount: "210 Reviews", 
+                badge: "MUST-HAVE", 
+                desc: "An ergonomically designed premium eyelash curler crafted to lift, curl, and fan out lashes safely without pinching or damaging delicate hair fibers." 
+            },
+            { 
+                id: 4, 
+                name: "Lip Stain", 
+                price: 220.00, 
+                category: "Lips", 
+                img: "P4.jpg", 
+                rating: 4.7, 
+                reviewsCount: "85 Reviews", 
+                badge: "POPULAR", 
+                desc: "A long-lasting multi-use liquid stain for lips and cheeks. Infused with hydrating properties to provide vibrant color without drying out skin." 
+            },
+            { 
+                id: 5, 
+                name: "Sun kissed", 
+                price: 280.00, 
+                category: "Face", 
+                img: "P5.jpg", 
+                rating: 4.9, 
+                reviewsCount: "115 Reviews", 
+                badge: "TRENDING", 
+                desc: "A creamy contour stick that glides effortlessly on skin to add warmth and definition. Perfect for sculpting cheekbones with a natural sun-kissed effect." 
+            },
+            { 
+                id: 6, 
+                name: "Perfect Touch", 
+                price: 185.00, 
+                category: "Face", 
+                img: "P6.jpg", 
+                rating: 4.8, 
+                reviewsCount: "164 Reviews", 
+                badge: "TOP CHOICE", 
+                desc: "A high-pigment liquid concealer with a soft wand applicator. Effortlessly brightens dark under-eye circles and masks blemishes seamlessly." 
+            },
+            { 
+                id: 7, 
+                name: "Soft Matte", 
+                price: 250.00, 
+                category: "Face", 
+                img: "P7.jpg", 
+                rating: 4.6, 
+                reviewsCount: "73 Reviews", 
+                badge: "HOT", 
+                desc: "An oil-control pressed setting powder formulated to minimize shine and pores. Keeps your complexion looking fresh, smooth, and matte throughout the day." 
+            },
+            { 
+                id: 8, 
+                name: "Lash Bloom", 
+                price: 299.00, 
+                category: "Eyes", 
+                img: "P8.jpg", 
+                rating: 4.9, 
+                reviewsCount: "190 Reviews", 
+                badge: "NEW", 
+                desc: "A lengthening and volumizing mascara equipped with a precision brush. Smudge-proof and waterproof formula designed for dramatic, clump-free lashes." 
+            },
+            { 
+                id: 9, 
+                name: "Stay Fresh", 
+                price: 310.00, 
+                category: "Face", 
+                img: "P9.jpg", 
+                rating: 4.8, 
+                reviewsCount: "88 Reviews", 
+                badge: "ESSENTIAL", 
+                desc: "An ultra-fine makeup setting spray designed to lock in makeup for up to 16 hours. Resists fading, creasing, and melting under warm climate conditions." 
+            },
+            { 
+                id: 10, 
+                name: "Velvet Kiss", 
+                price: 260.00, 
+                category: "Lips", 
+                img: "P10.jpg", 
+                rating: 4.9, 
+                reviewsCount: "130 Reviews", 
+                badge: "CLASSIC", 
+                desc: "A classic soft-matte bullet lipstick delivering rich pigment in a single swipe. Features a moisturizing formula that keeps lips soft and comfortable." 
+            }
+        ];
+
+        let cart = [];
+        let orders = [];
+        let selectedProductId = null;
+        let currentQty = 1;
+        let currentCategory = 'All';
+
+        function renderProducts(items) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+
+            items.forEach(item => {
+                grid.innerHTML += `
+                    <div class="product-card" onclick="openProductDetails(${item.id})">
+                        <span class="badge">${item.badge}</span>
+                        <img src="${item.img}" alt="${item.name}" class="product-img">
+                        <div class="product-info">
+                            <div class="product-title">${item.name}</div>
+                            <div class="product-rating">
+                                <i class="fa-solid fa-star"></i> ${item.rating} (${item.reviewsCount})
+                            </div>
+                            <div class="product-price">₱${item.price.toFixed(2)}</div>
+                            <div class="btn-view">View Details</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => {
+                const matchesSearch = p.name.toLowerCase().includes(query);
+                const matchesCat = currentCategory === 'All' || p.category === currentCategory;
+                return matchesSearch && matchesCat;
+            });
+            renderProducts(filtered);
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-chip').forEach(c => {
+                c.classList.toggle('active', c.innerText === cat);
+            });
+            filterProducts();
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+
+            document.getElementById('nav-home').classList.toggle('active', pageId === 'shop-page');
+            document.getElementById('nav-cart').classList.toggle('active', pageId === 'cart-page');
+            document.getElementById('nav-orders').classList.toggle('active', pageId === 'orders-page');
+
+            if(pageId === 'cart-page') renderCart();
+            if(pageId === 'orders-page') renderOrders();
+        }
+
+        function openProductDetails(id) {
+            const item = products.find(p => p.id === id);
+            if(!item) return;
+
+            selectedProductId = item.id;
+            currentQty = 1;
+            document.getElementById('qty-count').innerText = currentQty;
+
+            document.getElementById('detail-img').src = item.img;
+            document.getElementById('detail-title').innerText = item.name;
+            document.getElementById('detail-rating').innerText = item.rating;
+            document.getElementById('detail-reviews').innerText = item.reviewsCount;
+            document.getElementById('detail-price').innerText = `₱${item.price.toFixed(2)}`;
+            document.getElementById('detail-desc').innerText = item.desc;
+
+            showPage('details-page');
+        }
+
+        function changeQty(amount) {
+            if(currentQty + amount >= 1) {
+                currentQty += amount;
+                document.getElementById('qty-count').innerText = currentQty;
+            }
+        }
+
+        function addToCartCurrent() {
+            if(selectedProductId) {
+                const item = products.find(p => p.id === selectedProductId);
+                const existingIndex = cart.findIndex(c => c.id === item.id);
+                
+                if(existingIndex > -1) {
+                    cart[existingIndex].quantity += currentQty;
+                } else {
+                    cart.push({ ...item, quantity: currentQty });
+                }
+
+                updateCartBadge();
+                alert(`Added ${currentQty}x "${item.name}" to your cart!`);
+                showPage('shop-page');
+            }
+        }
+
+        function updateCartBadge() {
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').innerText = totalCount;
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+            let total = 0;
+
+            if(cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#888; padding:30px 0;">Your cart is currently empty.</p>';
+            } else {
+                cart.forEach((item, idx) => {
+                    const itemSubtotal = item.price * item.quantity;
+                    total += itemSubtotal;
+                    container.innerHTML += `
+                        <div class="cart-item">
+                            <img src="${item.img}" alt="${item.name}">
+                            <div class="cart-item-info">
+                                <div class="cart-item-title">${item.name}</div>
+                                <div class="cart-item-sub">Qty: ${item.quantity} x ₱${item.price.toFixed(2)}</div>
+                                <div class="cart-item-price">₱${itemSubtotal.toFixed(2)}</div>
+                            </div>
+                            <button onclick="removeFromCart(${idx})" style="border:none; background:none; color:red; font-size:1.1rem; cursor:pointer;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('cart-total-price').innerText = `₱${total.toFixed(2)}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartBadge();
+            renderCart();
+        }
+
+        function placeOrder() {
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const address = document.getElementById('cust-address').value.trim();
+            const payment = document.getElementById('cust-payment').value;
+
+            if(!name || !phone || !address) {
+                alert('Please complete all delivery details before placing your order.');
+                return;
+            }
+
+            if(cart.length === 0) {
+                alert('Your cart is empty!');
+                showPage('shop-page');
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const orderRecord = {
+                id: 'HS-' + Math.floor(100000 + Math.random() * 900000),
+                date: new Date().toLocaleDateString(),
+                customer: name,
+                address: address,
+                payment: payment,
+                items: [...cart],
+                total: total
+            };
+
+            orders.unshift(orderRecord);
+            cart = [];
+            updateCartBadge();
+            
+            alert(`Order Successful! Order ID: ${orderRecord.id}`);
+            showPage('orders-page');
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('orders-container');
+            container.innerHTML = '';
+
+            if(orders.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#888; padding:30px 0;">No past orders yet.</p>';
+                return;
+            }
+
+            orders.forEach(ord => {
+                let itemsSummary = ord.items.map(i => `${i.quantity}x ${i.name}`).join(', ');
+                container.innerHTML += `
+                    <div class="form-card" style="margin-bottom: 12px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <strong style="color:var(--primary);">${ord.id}</strong>
+                            <span style="font-size:0.8rem; color:#888;">${ord.date}</span>
+                        </div>
+                        <p style="font-size:0.85rem; color:#444; margin-bottom:4px;"><strong>Customer:</strong> ${ord.customer}</p>
+                        <p style="font-size:0.85rem; color:#444; margin-bottom:4px;"><strong>Payment:</strong> ${ord.payment}</p>
+                        <p style="font-size:0.85rem; color:#666; margin-bottom:8px;"><strong>Items:</strong> ${itemsSummary}</p>
+                        <div style="font-weight:bold; color:var(--primary); font-size:1rem; border-top:1px dashed #eee; padding-top:6px;">
+                            Total Paid: ₱${ord.total.toFixed(2)}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        renderProducts(products);
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Her Sanctuary | makes you pretty</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #d87093;
+            --accent: #fff0f5;
+            --dark: #2c2c2c;
+            --gray: #666;
+            --light-gray: #f8f9fa;
+            --shadow: 0 4px 15px rgba(0,0,0,0.08);
+            --radius: 12px;
+            --star: #ffb400;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #faf5f7; color: var(--dark); padding-bottom: 75px; }
+        header { background: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 12px 16px; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .logo { font-size: 1.3rem; font-weight: 800; color: var(--primary); text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .header-actions { display: flex; gap: 10px; }
+        .icon-btn { position: relative; background: var(--accent); border: none; width: 40px; height: 40px; border-radius: 50%; color: var(--primary); font-size: 1.1rem; cursor: pointer; }
+        .cart-badge { position: absolute; top: -2px; right: -2px; background: var(--primary); color: white; font-size: 0.75rem; font-weight: bold; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .search-box { position: relative; }
+        .search-box input { width: 100%; padding: 10px 16px 10px 40px; border: 1px solid #eee; background: var(--light-gray); border-radius: 20px; font-size: 0.9rem; outline: none; }
+        .search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--gray); }
+        .container { padding: 16px; max-width: 800px; margin: 0 auto; }
+        .page-view { display: none; }
+        .page-view.active { display: block; }
+        .category-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 14px; scrollbar-width: none; }
+        .category-scroll::-webkit-scrollbar { display: none; }
+        .cat-chip { white-space: nowrap; background: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: var(--gray); border: 1px solid #eee; cursor: pointer; }
+        .cat-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        @media (min-width: 600px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+        .product-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; cursor: pointer; position: relative; }
+        .badge { position: absolute; top: 8px; left: 8px; background: var(--primary); color: white; font-size: 0.65rem; font-weight: bold; padding: 3px 8px; border-radius: 10px; text-transform: uppercase; }
+        .product-img { width: 100%; height: 170px; object-fit: cover; background: #f0f0f0; }
+        .product-info { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; color: var(--dark); }
+        .product-rating { font-size: 0.75rem; color: var(--star); margin-bottom: 6px; }
+        .product-price { font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
+        .btn-view { background: var(--accent); color: var(--primary); border: none; padding: 8px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; text-align: center; margin-top: auto; }
+        .details-card { background: white; border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+        .back-btn { background: none; border: none; color: var(--primary); font-weight: 600; font-size: 0.95rem; margin-bottom: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .details-img { width: 100%; max-height: 350px; object-fit: cover; border-radius: var(--radius); margin-bottom: 16px; }
+        .details-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; }
+        .details-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; font-size: 0.85rem; color: var(--gray); }
+        .details-price { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin-bottom: 16px; }
+        .perks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; background: var(--light-gray); padding: 10px; border-radius: 8px; margin-bottom: 18px; font-size: 0.8rem; color: #444; }
+        .perk-item { display: flex; align-items: center; gap: 6px; }
+        .perk-item i { color: var(--primary); }
+        .section-header { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; color: var(--dark); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
+        .details-desc { color: var(--gray); line-height: 1.6; font-size: 0.95rem; margin-bottom: 20px; }
+        .qty-selector { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .qty-btn { background: var(--light-gray); border: 1px solid #ddd; width: 32px; height: 32px; border-radius: 6px; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
+        .qty-val { font-weight: bold; font-size: 1rem; }
+        .action-btn { background: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(216, 112, 147, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .cart-item { display: flex; align-items: center; background: white; padding: 12px; border-radius: var(--radius); margin-bottom: 10px; box-shadow: var(--shadow); }
+        .cart-item img { width: 65px; height: 65px; border-radius: 8px; object-fit: cover; margin-right: 12px; }
+        .cart-item-info { flex-grow: 1; }
+        .cart-item-title { font-weight: 600; font-size: 0.95rem; }
+        .cart-item-sub { font-size: 0.8rem; color: var(--gray); }
+        .cart-item-price { color: var(--primary); font-weight: 700; font-size: 0.9rem; }
+        .cart-total-box { background: white; padding: 16px; border-radius: var(--radius); margin-top: 16px; box-shadow: var(--shadow); }
+        .total-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; }
+        .form-card { background: white; padding: 18px; border-radius: var(--radius); box-shadow: var(--shadow); }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--dark); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; outline: none; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; box-shadow: 0 -2px 10px rgba(0,0,0,0.03); z-index: 100; }
+        .nav-item { display: flex; flexDirection: column; align-items: center; color: var(--gray); font-size: 0.75rem; cursor: pointer; text-decoration: none; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { font-size: 1.2rem; margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <div class="logo" onclick="showPage('shop-page')">
+                <i class="fa-solid fa-gem"></i> Her Sanctuary
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="showPage('orders-page')">
+                    <i class="fa-solid fa-receipt"></i>
+                </button>
+                <button class="icon-btn" onclick="showPage('cart-page')">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-badge" id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Search beauty products..." onkeyup="filterProducts()">
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div id="shop-page" class="page-view active">
+            <div class="category-scroll">
+                <div class="cat-chip active" onclick="filterCategory('All')">All</div>
+                <div class="cat-chip" onclick="filterCategory('Face')">Face</div>
+                <div class="cat-chip" onclick="filterCategory('Lips')">Lips</div>
+                <div class="cat-chip" onclick="filterCategory('Eyes')">Eyes</div>
+            </div>
+
+            <div class="product-grid" id="productGrid"></div>
+        </div>
+
+        <div id="details-page" class="page-view">
+            <button class="back-btn" onclick="showPage('shop-page')">
+                <i class="fa-solid fa-arrow-left"></i> Back to Shop
+            </button>
+            <div class="details-card">
+                <img id="detail-img" src="" alt="" class="details-img">
+                <h1 id="detail-title" class="details-title"></h1>
+                
+                <div class="details-meta">
+                    <span style="color: var(--star);"><i class="fa-solid fa-star"></i> <span id="detail-rating"></span></span>
+                    <span>•</span>
+                    <span id="detail-reviews"></span>
+                    <span>•</span>
+                    <span style="color: green; font-weight: 600;"><i class="fa-solid fa-check-circle"></i> In Stock</span>
+                </div>
+
+                <div id="detail-price" class="details-price"></div>
+
+                <div class="perks-grid">
+                    <div class="perk-item"><i class="fa-solid fa-truck-fast"></i> Free Shipping</div>
+                    <div class="perk-item"><i class="fa-solid fa-shield-heart"></i> 100% Authentic</div>
+                    <div class="perk-item"><i class="fa-solid fa-hand-holding-dollar"></i> Cash on Delivery</div>
+                    <div class="perk-item"><i class="fa-solid fa-rotate-left"></i> 7 Days Return</div>
+                </div>
+                
+                <div class="section-header">About This Product</div>
+                <p id="detail-desc" class="details-desc"></p>
+                
+                <div class="qty-selector">
+                    <span style="font-weight: 600; font-size: 0.9rem;">Quantity:</span>
+                    <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                    <span class="qty-val" id="qty-count">1</span>
+                    <button class="qty-btn" onclick="changeQty(1)">+</button>
+                </div>
+
+                <button class="action-btn" onclick="addToCartCurrent()">
+                    <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+
+        <div id="cart-page" class="page-view">
+            <button class="back-btn" onclick="showPage('shop-page')">
+                <i class="fa-solid fa-arrow-left"></i> Continue Shopping
+            </button>
+            <h2 style="font-size: 1.2rem; margin-bottom: 12px;">My Shopping Cart</h2>
+            <div id="cart-items-container"></div>
+            <div class="cart-total-box">
+                <div class="total-row">
+                    <span>Total Amount:</span>
+                    <span id="cart-total-price">₱0.00</span>
+                </div>
+                <button class="action-btn" onclick="showPage('checkout-page')">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
+
+        <div id="checkout-page" class="page-view">
+            <button class="back-btn" onclick="showPage('cart-page')">
+                <i class="fa-solid fa-arrow-left"></i> Back to Cart
+            </button>
+            <h2 style="font-size: 1.2rem; margin-bottom: 14px;">Delivery Information</h2>
+            
+            <div class="form-card">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="cust-name" placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" id="cust-phone" placeholder="09XXXXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>Delivery Address</label>
+                    <textarea id="cust-address" rows="3" placeholder="Enter complete home address"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select id="cust-payment">
+                        <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
+                        <option value="GCash">GCash E-Wallet</option>
+                    </select>
+                </div>
+
+                <button class="action-btn" style="margin-top: 10px;" onclick="placeOrder()">
+                    Place Order Now
+                </button>
+            </div>
+        </div>
+
+        <div id="orders-page" class="page-view">
+            <button class="back-btn" onclick="showPage('shop-page')">
+                <i class="fa-solid fa-arrow-left"></i> Back to Shop
+            </button>
+            <h2 style="font-size: 1.2rem; margin-bottom: 12px;">My Orders Summary</h2>
+            <div id="orders-container"></div>
+        </div>
+
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" id="nav-home" onclick="showPage('shop-page')">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" id="nav-cart" onclick="showPage('cart-page')">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span>Cart</span>
+        </div>
+        <div class="nav-item" id="nav-orders" onclick="showPage('orders-page')">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Orders</span>
+        </div>
+    </nav>
+
+    <script>
+        
+        const products = [
+            { 
+                id: 1, 
+                name: "Rosy Cheeks", 
+                price: 199.00, 
+                category: "Face", 
+                img: "P1.jpg", 
+                rating: 4.9, 
+                reviewsCount: "142 Reviews", 
+                badge: "BESTSELLER", 
+                desc: "A velvety smooth compact blush designed to deliver a natural, radiant rosy tint. Easy to blend and builds seamlessly for a fresh flush that stays all day." 
+            },
+            { 
+                id: 2, 
+                name: "Flawless Base", 
+                price: 349.00, 
+                category: "Face", 
+                img: "P2.jpg", 
+                rating: 4.8, 
+                reviewsCount: "98 Reviews", 
+                badge: "VIRAL", 
+                desc: "A lightweight liquid foundation offering buildable medium-to-full coverage. Formulated to blur imperfections and equalize skin tone with a silky smooth finish." 
+            },
+            { 
+                id: 3, 
+                name: "Lash Lift", 
+                price: 149.00, 
+                category: "Eyes", 
+                img: "P3.jpg", 
+                rating: 5.0, 
+                reviewsCount: "210 Reviews", 
+                badge: "MUST-HAVE", 
+                desc: "An ergonomically designed premium eyelash curler crafted to lift, curl, and fan out lashes safely without pinching or damaging delicate hair fibers." 
+            },
+            { 
+                id: 4, 
+                name: "Lip Stain", 
+                price: 220.00, 
+                category: "Lips", 
+                img: "P4.jpg", 
+                rating: 4.7, 
+                reviewsCount: "85 Reviews", 
+                badge: "POPULAR", 
+                desc: "A long-lasting multi-use liquid stain for lips and cheeks. Infused with hydrating properties to provide vibrant color without drying out skin." 
+            },
+            { 
+                id: 5, 
+                name: "Sun kissed", 
+                price: 280.00, 
+                category: "Face", 
+                img: "P5.jpg", 
+                rating: 4.9, 
+                reviewsCount: "115 Reviews", 
+                badge: "TRENDING", 
+                desc: "A creamy contour stick that glides effortlessly on skin to add warmth and definition. Perfect for sculpting cheekbones with a natural sun-kissed effect." 
+            },
+            { 
+                id: 6, 
+                name: "Perfect Touch", 
+                price: 185.00, 
+                category: "Face", 
+                img: "P6.jpg", 
+                rating: 4.8, 
+                reviewsCount: "164 Reviews", 
+                badge: "TOP CHOICE", 
+                desc: "A high-pigment liquid concealer with a soft wand applicator. Effortlessly brightens dark under-eye circles and masks blemishes seamlessly." 
+            },
+            { 
+                id: 7, 
+                name: "Soft Matte", 
+                price: 250.00, 
+                category: "Face", 
+                img: "P7.jpg", 
+                rating: 4.6, 
+                reviewsCount: "73 Reviews", 
+                badge: "HOT", 
+                desc: "An oil-control pressed setting powder formulated to minimize shine and pores. Keeps your complexion looking fresh, smooth, and matte throughout the day." 
+            },
+            { 
+                id: 8, 
+                name: "Lash Bloom", 
+                price: 299.00, 
+                category: "Eyes", 
+                img: "P8.jpg", 
+                rating: 4.9, 
+                reviewsCount: "190 Reviews", 
+                badge: "NEW", 
+                desc: "A lengthening and volumizing mascara equipped with a precision brush. Smudge-proof and waterproof formula designed for dramatic, clump-free lashes." 
+            },
+            { 
+                id: 9, 
+                name: "Stay Fresh", 
+                price: 310.00, 
+                category: "Face", 
+                img: "P9.jpg", 
+                rating: 4.8, 
+                reviewsCount: "88 Reviews", 
+                badge: "ESSENTIAL", 
+                desc: "An ultra-fine makeup setting spray designed to lock in makeup for up to 16 hours. Resists fading, creasing, and melting under warm climate conditions." 
+            },
+            { 
+                id: 10, 
+                name: "Velvet Kiss", 
+                price: 260.00, 
+                category: "Lips", 
+                img: "P10.jpg", 
+                rating: 4.9, 
+                reviewsCount: "130 Reviews", 
+                badge: "CLASSIC", 
+                desc: "A classic soft-matte bullet lipstick delivering rich pigment in a single swipe. Features a moisturizing formula that keeps lips soft and comfortable." 
+            }
+        ];
+
+        let cart = [];
+        let orders = [];
+        let selectedProductId = null;
+        let currentQty = 1;
+        let currentCategory = 'All';
+
+        function renderProducts(items) {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+
+            items.forEach(item => {
+                grid.innerHTML += `
+                    <div class="product-card" onclick="openProductDetails(${item.id})">
+                        <span class="badge">${item.badge}</span>
+                        <img src="${item.img}" alt="${item.name}" class="product-img">
+                        <div class="product-info">
+                            <div class="product-title">${item.name}</div>
+                            <div class="product-rating">
+                                <i class="fa-solid fa-star"></i> ${item.rating} (${item.reviewsCount})
+                            </div>
+                            <div class="product-price">₱${item.price.toFixed(2)}</div>
+                            <div class="btn-view">View Details</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => {
+                const matchesSearch = p.name.toLowerCase().includes(query);
+                const matchesCat = currentCategory === 'All' || p.category === currentCategory;
+                return matchesSearch && matchesCat;
+            });
+            renderProducts(filtered);
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-chip').forEach(c => {
+                c.classList.toggle('active', c.innerText === cat);
+            });
+            filterProducts();
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+
+            document.getElementById('nav-home').classList.toggle('active', pageId === 'shop-page');
+            document.getElementById('nav-cart').classList.toggle('active', pageId === 'cart-page');
+            document.getElementById('nav-orders').classList.toggle('active', pageId === 'orders-page');
+
+            if(pageId === 'cart-page') renderCart();
+            if(pageId === 'orders-page') renderOrders();
+        }
+
+        function openProductDetails(id) {
+            const item = products.find(p => p.id === id);
+            if(!item) return;
+
+            selectedProductId = item.id;
+            currentQty = 1;
+            document.getElementById('qty-count').innerText = currentQty;
+
+            document.getElementById('detail-img').src = item.img;
+            document.getElementById('detail-title').innerText = item.name;
+            document.getElementById('detail-rating').innerText = item.rating;
+            document.getElementById('detail-reviews').innerText = item.reviewsCount;
+            document.getElementById('detail-price').innerText = `₱${item.price.toFixed(2)}`;
+            document.getElementById('detail-desc').innerText = item.desc;
+
+            showPage('details-page');
+        }
+
+        function changeQty(amount) {
+            if(currentQty + amount >= 1) {
+                currentQty += amount;
+                document.getElementById('qty-count').innerText = currentQty;
+            }
+        }
+
+        function addToCartCurrent() {
+            if(selectedProductId) {
+                const item = products.find(p => p.id === selectedProductId);
+                const existingIndex = cart.findIndex(c => c.id === item.id);
+                
+                if(existingIndex > -1) {
+                    cart[existingIndex].quantity += currentQty;
+                } else {
+                    cart.push({ ...item, quantity: currentQty });
+                }
+
+                updateCartBadge();
+                alert(`Added ${currentQty}x "${item.name}" to your cart!`);
+                showPage('shop-page');
+            }
+        }
+
+        function updateCartBadge() {
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').innerText = totalCount;
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+            let total = 0;
+
+            if(cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#888; padding:30px 0;">Your cart is currently empty.</p>';
+            } else {
+                cart.forEach((item, idx) => {
+                    const itemSubtotal = item.price * item.quantity;
+                    total += itemSubtotal;
+                    container.innerHTML += `
+                        <div class="cart-item">
+                            <img src="${item.img}" alt="${item.name}">
+                            <div class="cart-item-info">
+                                <div class="cart-item-title">${item.name}</div>
+                                <div class="cart-item-sub">Qty: ${item.quantity} x ₱${item.price.toFixed(2)}</div>
+                                <div class="cart-item-price">₱${itemSubtotal.toFixed(2)}</div>
+                            </div>
+                            <button onclick="removeFromCart(${idx})" style="border:none; background:none; color:red; font-size:1.1rem; cursor:pointer;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+            }
+
+            document.getElementById('cart-total-price').innerText = `₱${total.toFixed(2)}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartBadge();
+            renderCart();
+        }
+
+        function placeOrder() {
+            const name = document.getElementById('cust-name').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+            const address = document.getElementById('cust-address').value.trim();
+            const payment = document.getElementById('cust-payment').value;
+
+            if(!name || !phone || !address) {
+                alert('Please complete all delivery details before placing your order.');
+                return;
+            }
+
+            if(cart.length === 0) {
+                alert('Your cart is empty!');
+                showPage('shop-page');
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const orderRecord = {
+                id: 'HS-' + Math.floor(100000 + Math.random() * 900000),
+                date: new Date().toLocaleDateString(),
+                customer: name,
+                address: address,
+                payment: payment,
+                items: [...cart],
+                total: total
+            };
+
+            orders.unshift(orderRecord);
+            cart = [];
+            updateCartBadge();
+            
+            alert(`Order Successful! Order ID: ${orderRecord.id}`);
+            showPage('orders-page');
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('orders-container');
+            container.innerHTML = '';
+
+            if(orders.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#888; padding:30px 0;">No past orders yet.</p>';
+                return;
+            }
+
+            orders.forEach(ord => {
+                let itemsSummary = ord.items.map(i => `${i.quantity}x ${i.name}`).join(', ');
+                container.innerHTML += `
+                    <div class="form-card" style="margin-bottom: 12px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <strong style="color:var(--primary);">${ord.id}</strong>
+                            <span style="font-size:0.8rem; color:#888;">${ord.date}</span>
+                        </div>
+                        <p style="font-size:0.85rem; color:#444; margin-bottom:4px;"><strong>Customer:</strong> ${ord.customer}</p>
+                        <p style="font-size:0.85rem; color:#444; margin-bottom:4px;"><strong>Payment:</strong> ${ord.payment}</p>
+                        <p style="font-size:0.85rem; color:#666; margin-bottom:8px;"><strong>Items:</strong> ${itemsSummary}</p>
+                        <div style="font-weight:bold; color:var(--primary); font-size:1rem; border-top:1px dashed #eee; padding-top:6px;">
+                            Total Paid: ₱${ord.total.toFixed(2)}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        renderProducts(products);
+    </script>
+</body>
+</html>
